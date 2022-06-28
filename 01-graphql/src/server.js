@@ -33,7 +33,14 @@ const typeDefs = /* GraphQL */`
         comments: [Comment!]!
     }
     type Mutation {
-        createUser(data: CreateUserInput): User!
+        createUser(data: CreateUserInput!): User!
+        createPost(authorId: ID!, data: CreatePostInput!): Post!
+        createComment(authorId: ID!, postId: ID!, text: String!): Comment!
+    }
+    input CreatePostInput{
+        title: String!
+        body: String!
+        published: Boolean
     }
     input CreateUserInput {
         name: String! 
@@ -119,6 +126,39 @@ const resolvers = {
             }
             users.push(newUser)
             return newUser;
+        },
+        createPost(parent, args){
+            const {title, body, published} = args.data;
+            const position = users.findIndex(user => user.id === args.authorId)
+            if(position < 0){
+                throw new Error("Unable to locate User")
+            }
+            const newPost = {
+                id : v4(),
+                title,
+                body,
+                published : published || false,
+                author: args.authorId
+            }
+            posts.push(newPost);
+            return newPost;
+        },
+        createComment(parent, args){
+            const { authorId, postId, text } = args;
+            const userFound = users.find(user => user.id === authorId)
+            const postFound = posts.find(post => post.id === postId)
+            console.log(userFound, postFound);
+            if(userFound && postFound){
+                const newComment = { 
+                    id : v4(),
+                    text,
+                    post : postId,
+                    creator : authorId
+                }
+                comments.push(newComment);
+                return newComment;
+            }
+            throw new Error("Unable to find User / Post")
         }
     },
     User :{
