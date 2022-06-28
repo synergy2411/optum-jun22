@@ -5,14 +5,15 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --exec babel-node src/server.js",
-    "dev" : "nodemon src/server.js"
+    "dev": "nodemon src/server.js"
   },
   "keywords": [],
   "author": "SumitK",
   "license": "ISC",
   "dependencies": {
     "@graphql-yoga/node": "^2.9.2",
-    "graphql": "^16.5.0"
+    "graphql": "^16.5.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.18.6",

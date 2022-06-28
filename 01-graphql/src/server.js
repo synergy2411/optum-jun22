@@ -1,5 +1,6 @@
 // ES6 Module Import - latest JS import Syntax
 import { createServer } from '@graphql-yoga/node';
+import { v4 } from 'uuid';
 
 // Common Module Import
 // const { createServer } = require("@graphql-yoga/node");
@@ -30,6 +31,14 @@ const typeDefs = /* GraphQL */`
         users: [User!]!
         posts: [Post!]!
         comments: [Comment!]!
+    }
+    type Mutation {
+        createUser(data: CreateUserInput): User!
+    }
+    input CreateUserInput {
+        name: String! 
+        email: String! 
+        age: Int!
     }
     type Comment {
         id: ID!
@@ -97,6 +106,19 @@ const resolvers = {
             //     const commentCreator = users.find(user => user.id === comment.creator)
             //     return {...comment, post : commentPost, creator : commentCreator}
             // })
+        }
+    },
+    Mutation: {
+        createUser(parent, args){
+            const {name, email, age} = args.data
+            const newUser = {
+                id: v4(),
+                name,
+                email,
+                age
+            }
+            users.push(newUser)
+            return newUser;
         }
     },
     User :{
