@@ -5,15 +5,21 @@ import { createServer } from '@graphql-yoga/node';
 // const { createServer } = require("@graphql-yoga/node");
 
 const users = [
-    { id : "U001", name : "John Doe", email : "john@test", age : 34},
-    { id : "U002", name : "Alice Doe", email : "alice@test", age : 35},
-    { id : "U003", name : "Mario Doe", email : "zzz@test", age : 36},
+    { id: "U001", name: "John Doe", email: "john@test", age: 34 },
+    { id: "U002", name: "Alice Doe", email: "alice@test", age: 35 },
+    { id: "U003", name: "Mario Doe", email: "zzz@test", age: 36 },
 ]
 const posts = [
-    {id :"P001", title: "Aweosme GraphQL", body : "...", published : false, author: "U001"},
-    {id :"P002", title: "GraphQL 101", body : "...", published : true, author: "U002"},
-    {id :"P003", title: "Mastering GraphQL", body : "...", published : false, author: "U001"},
-    {id :"P004", title: "GraphQL for Beginners", body : "...", published : true, author: "U003"},
+    { id: "P001", title: "Aweosme GraphQL", body: "...", published: false, author: "U001" },
+    { id: "P002", title: "GraphQL 101", body: "...", published: true, author: "U002" },
+    { id: "P003", title: "Mastering GraphQL", body: "...", published: false, author: "U001" },
+    { id: "P004", title: "GraphQL for Beginners", body: "...", published: true, author: "U003" },
+]
+const comments = [
+    { id: "C001", text: "I Love it", post: "P001", creator: "U003"},
+    { id: "C002", text: "Like it", post: "P002", creator: "U003"},
+    { id: "C003", text: "it was awesosme", post: "P003", creator: "U002"},
+    { id: "C004", text: "Nice post", post: "P002", creator: "U001"},
 ]
 
 const typeDefs = /* GraphQL */`
@@ -23,6 +29,12 @@ const typeDefs = /* GraphQL */`
         me(searchTerm: String!): User
         users: [User!]!
         posts: [Post!]!
+        comments: [Comment!]!
+    }
+    type Comment {
+        id: ID!
+        text: String!
+        post: Post!
     }
     type Post {
         id: ID!
@@ -30,6 +42,7 @@ const typeDefs = /* GraphQL */`
         body: String!
         published: Boolean!
         author: User!
+        comments: [Comment!]!
     }
     type User {
         id: ID!
@@ -41,41 +54,48 @@ const typeDefs = /* GraphQL */`
 `
 
 const resolvers = {
-    Query : {
-        hello () {
+    Query: {
+        hello() {
             return "World!!"
         },
-        age(){
+        age() {
             return user.age;
         },
-        me(parent, args, context, info){
-            const userFound =  users.find(user => {
+        me(parent, args, context, info) {
+            const userFound = users.find(user => {
                 const nameFound = user.name.toLowerCase().includes(args.searchTerm.toLowerCase())
                 const emailFound = user.email.toLowerCase().includes(args.searchTerm.toLowerCase())
                 return nameFound || emailFound;
             })
-            if(!userFound){
+            if (!userFound) {
                 throw new Error("Unable to find the user")
             }
             return userFound
         },
-        users(){
+        users() {
             return users.map(user => {
                 const userPosts = posts.filter(post => post.author === user.id)
-                return {...user, posts : userPosts}
+                return { ...user, posts: userPosts }
             });
         },
-        posts(){
+        posts() {
             return posts.map(post => {
                 const postUser = users.find(user => user.id === post.author)
-                return {...post, author : postUser}
+                const postComments = comments.filter(comment => comment.post === post.id)
+                return { ...post, author: postUser, comments : postComments }
+            })
+        },
+        comments(){
+            return comments.map(comment =>{
+                const commentPost = posts.find(post => post.id === comment.post)
+                return {...comment, post : commentPost}
             })
         }
     }
 }
 
 const server = createServer({
-    schema : {
+    schema: {
         typeDefs,               // defines the structure of GraphQL API
         resolvers               // defines the behaviour against each 
     }
