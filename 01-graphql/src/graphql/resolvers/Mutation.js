@@ -1,5 +1,4 @@
 import { v4 } from 'uuid';
-import { comments, users, posts } from '../../model/db';
 const Mutation = {
     createUser(parent, args, { db }, info) {
         const { name, email, age } = args.data
@@ -44,7 +43,7 @@ const Mutation = {
         }
         throw new Error("Unable to find User / Post")
     },
-    deleteComment(_, args, {db}) {
+    deleteComment(_, args, { db }) {
         const position = db.comments.findIndex(comment => comment.id === args.commentId)
         if (position >= 0) {
             const [deletedComment] = db.comments.splice(position, 1)
@@ -55,10 +54,10 @@ const Mutation = {
         }
         throw new Error("Unable to find comment")
     },
-    deletePost(_, args, {db}){
+    deletePost(_, args, { db }) {
         const position = db.posts.findIndex(post => post.id === args.postId)
-        if(position >= 0) {
-            const postToDelete =  db.posts[position];
+        if (position >= 0) {
+            const postToDelete = db.posts[position];
             db.posts = db.posts.filter(post => {
                 db.comments = db.comments.filter(comment => comment.post !== args.postId)
                 return post.id !== args.postId
@@ -66,7 +65,25 @@ const Mutation = {
             return postToDelete;
         }
         throw new Error("Unable to find post")
-    }
-}
+    },
+    deleteUser(_, args, { db }) {
 
-export { Mutation }
+            const position = db.users.findIndex(user => user.id === args.userId)
+            if(position >= 0){
+                db.comments = db.comments.filter(comment => comment.creator !== args.userId)
+                db.posts = db.posts.filter(post => {
+                    const isMatch = post.author === args.userId
+                    if(isMatch){
+                        db.comments = db.comments.filter(comment => comment.post !== post.id)
+                    }
+                    return !isMatch;
+                })
+                const [deletedUser] = db.users.splice(position, 1)
+                return deletedUser;
+            }
+            throw new Error("Unable to find user")
+        }
+    }
+
+export { Mutation };
+

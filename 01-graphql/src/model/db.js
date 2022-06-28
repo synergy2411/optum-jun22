@@ -17,6 +17,17 @@ let comments = [
     { id: "C004", text: "Nice post", post: "P002", creator: "U001"},
 ]
 
+// "U002"
+//  "P002"
+// "C003" "C002" "C004"
+
+
+// "U001"
+// POST -> "P001" -> "C001" || "P003" -> "C003"
+// Comments -> "C004" 
+
+
+
 export {
     users, posts, comments
 }
