@@ -35,6 +35,7 @@ const typeDefs = /* GraphQL */`
         id: ID!
         text: String!
         post: Post!
+        creator: User!
     }
     type Post {
         id: ID!
@@ -50,6 +51,7 @@ const typeDefs = /* GraphQL */`
         email: String!
         age: Int!
         posts: [Post!]!
+        comments: [Comment!]!
     }
 `
 
@@ -73,23 +75,52 @@ const resolvers = {
             return userFound
         },
         users() {
-            return users.map(user => {
-                const userPosts = posts.filter(post => post.author === user.id)
-                return { ...user, posts: userPosts }
-            });
+            return users;
+            // return users.map(user => {
+            //     const userPosts = posts.filter(post => post.author === user.id)
+            //     const userComments = comments.filter(comment => comment.creator === user.id)
+            //     return { ...user, posts: userPosts, comments : userComments }
+            // });
         },
         posts() {
-            return posts.map(post => {
-                const postUser = users.find(user => user.id === post.author)
-                const postComments = comments.filter(comment => comment.post === post.id)
-                return { ...post, author: postUser, comments : postComments }
-            })
+            return posts;
+            // return posts.map(post => {
+            //     const postUser = users.find(user => user.id === post.author)
+            //     const postComments = comments.filter(comment => comment.post === post.id)
+            //     return { ...post, author: postUser, comments : postComments }
+            // })
         },
         comments(){
-            return comments.map(comment =>{
-                const commentPost = posts.find(post => post.id === comment.post)
-                return {...comment, post : commentPost}
-            })
+            return comments;
+            // return comments.map(comment =>{
+            //     const commentPost = posts.find(post => post.id === comment.post)
+            //     const commentCreator = users.find(user => user.id === comment.creator)
+            //     return {...comment, post : commentPost, creator : commentCreator}
+            // })
+        }
+    },
+    User :{
+        posts(parent, args, context, info){
+            return posts.filter(post => post.author === parent.id)
+        },
+        comments(parent, args, context, info){
+            return comments.filter(comment => comment.creator === parent.id)
+        }
+    },
+    Post :{
+        author(parent){
+            return users.find(user => user.id === parent.author);
+        },
+        comments(parent){
+            return comments.filter(comment => comment.post === parent.id)
+        }
+    },
+    Comment : {
+        post(parent){
+            return posts.find(post => post.id === parent.post)
+        },
+        creator(parent){
+            return users.find(user => user.id === parent.creator)
         }
     }
 }
