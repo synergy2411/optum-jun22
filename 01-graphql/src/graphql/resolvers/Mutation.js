@@ -43,6 +43,15 @@ const Mutation = {
             return newComment;
         }
         throw new Error("Unable to find User / Post")
+    },
+    deleteComment(_, args, { comments }){
+        const position = comments.findIndex(comment => comment.id === args.commentId)
+        if(position >= 0){
+            const commentToDelete = comments[position]
+            comments = comments.filter(comment => comment.id !== args.commentId)
+            return commentToDelete
+        }
+        throw new Error("Unable to find comment")
     }
 }
 
