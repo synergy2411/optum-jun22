@@ -19,15 +19,17 @@ const resolvers = {
     Comment
 }
 
+let db = { 
+    users, posts, comments
+}
+
 const server = createServer({
     schema: {
         typeDefs,               // defines the structure of GraphQL API
         resolvers               // defines the behaviour against each 
     },
     context : {
-        users, 
-        posts,
-        comments
+        db
     }
 })
 
