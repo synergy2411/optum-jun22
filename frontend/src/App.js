@@ -1,6 +1,7 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 import ClassBasedComp from "./Components/Demo/ClassBasedComp";
+import ErrorBoundary from "./Components/Demo/ErrorBoundary";
 import Expenses from './Components/Expenses/Expenses';
 
 function App() {
@@ -9,11 +10,12 @@ function App() {
 
   return (
     <div>
-      
-      {/* <Expenses /> */}
-      {toggle && <ClassBasedComp show={toggle} />}
+      <ErrorBoundary>
+        {/* <Expenses /> */}
+        {toggle && <ClassBasedComp show={toggle} />}
 
-      <button className="btn btn-primary" onClick={() => setToggle(!toggle)}>Toggle</button>
+        <button className="btn btn-primary" onClick={() => setToggle(!toggle)}>Toggle</button>
+      </ErrorBoundary>
     </div>
   );
 }
