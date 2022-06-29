@@ -16,9 +16,7 @@ const Expenses = () => {
     const [showAddForm, setShowAddForm] = useState(false)
     const [selectedYear, setSelectedYear] = useState('2019')
 
-    const clickHandler = () => {
-        setShowAddForm(!showAddForm);
-    }
+    const clickHandler = () => setShowAddForm(!showAddForm);
 
     const onAddExpense = (expense) => {
         setExpenses(prevExpenses => [expense, ...prevExpenses]);
@@ -26,14 +24,10 @@ const Expenses = () => {
     }
     const onCancel = () => setShowAddForm(!showAddForm);
 
-    const onDeleteExpense = id => {
-        setExpenses(prevExpenses => prevExpenses.filter(exp => exp.id !== id))
-    }
-
-    const onFilterExpense = (selectedYear) => {
-        setSelectedYear(selectedYear);
-    }
-
+    const onDeleteExpense = id => setExpenses(prevExpenses => prevExpenses.filter(exp => exp.id !== id))
+    
+    const onFilterExpense = (selectedYear) => setSelectedYear(selectedYear);
+    
     const filteredExpenses = expenses.filter(expense => expense.createdAt.getFullYear().toString() === selectedYear)
 
     return (
