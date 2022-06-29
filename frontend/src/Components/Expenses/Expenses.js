@@ -14,6 +14,7 @@ const Expenses = () => {
     //             React.createElement("h4", {className :"tetx-center"}, "expenses again!!!"))
     const [expenses, setExpenses] = useState(INITIAL_EXPENSES)
     const [showAddForm, setShowAddForm] = useState(false)
+    const [selectedYear, setSelectedYear] = useState('2019')
 
     const clickHandler = () => {
         setShowAddForm(!showAddForm);
@@ -29,6 +30,12 @@ const Expenses = () => {
         setExpenses(prevExpenses => prevExpenses.filter(exp => exp.id !== id))
     }
 
+    const onFilterExpense = (selectedYear) => {
+        setSelectedYear(selectedYear);
+    }
+
+    const filteredExpenses = expenses.filter(expense => expense.createdAt.getFullYear().toString() === selectedYear)
+
     return (
         <div className='container'>
             <p className='display-4 text-center'>Awesome Expenses App</p>
@@ -40,12 +47,12 @@ const Expenses = () => {
                     {showAddForm && <AddExpense onCancel={onCancel} addExpense = {onAddExpense} />}
                 </div>
                 <div className='col-3'>
-                    <FilterExpense />
+                    <FilterExpense filterExpense = {onFilterExpense} initialYear = { selectedYear } />
                 </div>
             </div>
             <br/>
             <div className='row'>
-                { expenses.map(expense => <ExpenseItem deleteExpense={onDeleteExpense} expense={expense} key={expense.id} />) }
+                { filteredExpenses.map(expense => <ExpenseItem deleteExpense={onDeleteExpense} expense={expense} key={expense.id} />) }
             </div>
         </div>
     )
