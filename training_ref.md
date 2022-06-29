@@ -129,3 +129,11 @@ mutation{
 }
 
 # USER 
+
+
+
+# To create React App
+> npx create-react-app frontend
+
+# To install bootstrap
+> npm install bootstrap@4
