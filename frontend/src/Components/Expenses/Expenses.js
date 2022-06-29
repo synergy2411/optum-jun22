@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AddExpense from './AddExpense/AddExpense';
 import ExpenseItem from './ExpenseItem/ExpenseItem';
+import FilterExpense from './FilterExpense/FilterExpense';
 
 const INITIAL_EXPENSES = [
     { id: "e001", title: "grocery", amount: 12.99, createdAt: new Date("Dec 20, 2021") },
@@ -24,6 +25,10 @@ const Expenses = () => {
     }
     const onCancel = () => setShowAddForm(!showAddForm);
 
+    const onDeleteExpense = id => {
+        setExpenses(prevExpenses => prevExpenses.filter(exp => exp.id !== id))
+    }
+
     return (
         <div className='container'>
             <p className='display-4 text-center'>Awesome Expenses App</p>
@@ -34,10 +39,13 @@ const Expenses = () => {
                     <br/>
                     {showAddForm && <AddExpense onCancel={onCancel} addExpense = {onAddExpense} />}
                 </div>
+                <div className='col-3'>
+                    <FilterExpense />
+                </div>
             </div>
             <br/>
             <div className='row'>
-                { expenses.map(expense => <ExpenseItem expense={expense} key={expense.id} />) }
+                { expenses.map(expense => <ExpenseItem deleteExpense={onDeleteExpense} expense={expense} key={expense.id} />) }
             </div>
         </div>
     )

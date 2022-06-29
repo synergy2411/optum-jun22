@@ -13,6 +13,8 @@ const ExpenseItem = (props) => {
                 <div className='card-body'>
                     <p className='lead'>Amount : {props.expense.amount}  </p>
                     <ExpenseDate createdAt = {props.expense.createdAt} />
+                    <button className="btn btn-block btn-sm btn-outline-danger"
+                        onClick={() => props.deleteExpense(props.expense.id)}>DELETE</button>
                 </div>
             </div>
         </div>
