@@ -1,23 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
+import AddExpense from './AddExpense/AddExpense';
 import ExpenseItem from './ExpenseItem/ExpenseItem';
+
+const INITIAL_EXPENSES = [
+    { id: "e001", title: "grocery", amount: 12.99, createdAt: new Date("Dec 20, 2021") },
+    { id: "e002", title: "shopping", amount: 39.99, createdAt: new Date("Aug 2, 2019") },
+    { id: "e003", title: "insurance", amount: 99.9, createdAt: new Date("Jan 21, 2022") },
+]
 
 const Expenses = () => {
     // return React.createElement("div", { className : "container" }, 
     //             React.createElement("h4", {className :"tetx-center"}, "expenses again!!!"))
+    const [expenses, setExpenses] = useState(INITIAL_EXPENSES)
+    const [showAddForm, setShowAddForm] = useState(false)
 
-    const expenses = [
-        { id: "e001", title: "grocery", amount: 12.99, createdAt: new Date("Dec 20, 2021") },
-        { id: "e002", title: "shopping", amount: 39.99, createdAt: new Date("Aug 2, 2019") },
-        { id: "e003", title: "insurance", amount: 99.9, createdAt: new Date("Jan 21, 2022") },
-    ]
+    const clickHandler = () => {
+        setShowAddForm(!showAddForm);
+    }
+
+    const onAddExpense = (expense) => {
+        setExpenses(prevExpenses => [expense, ...prevExpenses]);
+        setShowAddForm(!showAddForm)
+    }
+    const onCancel = () => setShowAddForm(!showAddForm);
 
     return (
         <div className='container'>
             <p className='display-4 text-center'>Awesome Expenses App</p>
             <div className='row'>
-                <ExpenseItem expense = {expenses[0]} />
-                <ExpenseItem expense = {expenses[1]} />
-                <ExpenseItem expense = {expenses[2]} />
+                <div className='col-6 offset-3'>
+                    <button className='btn btn-dark btn-block' 
+                        onClick={clickHandler}>{showAddForm ? 'Hide' : 'Show'} Expense Form</button>
+                    <br/>
+                    {showAddForm && <AddExpense onCancel={onCancel} addExpense = {onAddExpense} />}
+                </div>
+            </div>
+            <br/>
+            <div className='row'>
+                { expenses.map(expense => <ExpenseItem expense={expense} key={expense.id} />) }
             </div>
         </div>
     )
