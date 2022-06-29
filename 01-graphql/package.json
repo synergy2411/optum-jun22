@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@graphql-yoga/node": "^2.9.2",
+    "event-target-polyfill": "0.0.3",
     "graphql": "^16.5.0",
     "uuid": "^8.3.2"
   },

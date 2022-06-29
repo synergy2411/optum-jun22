@@ -15,6 +15,19 @@ type Mutation {
     deleteComment(commentId: ID!): Comment!
     deletePost(postId: ID!): Post!
     deleteUser(userId: ID!): User!
+    updateUser(userId: ID!, data:UpdateUserInput): User!
+}
+type Subscription {
+    counter(from: Int!): Int! 
+    post: PostSubscriptionPayload!
+}
+type PostSubscriptionPayload {
+    mutation: String!
+    data: Post!
+}
+input UpdateUserInput {
+    name: String
+    age: Int
 }
 input CreatePostInput{
     title: String!

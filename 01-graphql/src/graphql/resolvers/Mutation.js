@@ -11,7 +11,7 @@ const Mutation = {
         db.users.push(newUser)
         return newUser;
     },
-    createPost(parent, args, { db }, info) {
+    createPost(parent, args, { db, pubsub }, info) {
         const { title, body, published } = args.data;
         const position = db.users.findIndex(user => user.id === args.authorId)
         if (position < 0) {
@@ -24,6 +24,12 @@ const Mutation = {
             published: published || false,
             author: args.authorId
         }
+        pubsub.publish("the-post-channel", {
+            post : {
+                mutation : "CREATED",
+                data: newPost
+            }
+        })
         db.posts.push(newPost);
         return newPost;
     },
@@ -54,7 +60,7 @@ const Mutation = {
         }
         throw new Error("Unable to find comment")
     },
-    deletePost(_, args, { db }) {
+    deletePost(_, args, { db, pubsub }) {
         const position = db.posts.findIndex(post => post.id === args.postId)
         if (position >= 0) {
             const postToDelete = db.posts[position];
@@ -62,28 +68,45 @@ const Mutation = {
                 db.comments = db.comments.filter(comment => comment.post !== args.postId)
                 return post.id !== args.postId
             })
+            pubsub.publish("the-post-channel", {
+                post : {
+                    mutation: "DELETED",
+                    data : postToDelete
+                }
+            })
             return postToDelete;
         }
         throw new Error("Unable to find post")
     },
     deleteUser(_, args, { db }) {
 
-            const position = db.users.findIndex(user => user.id === args.userId)
-            if(position >= 0){
-                db.comments = db.comments.filter(comment => comment.creator !== args.userId)
-                db.posts = db.posts.filter(post => {
-                    const isMatch = post.author === args.userId
-                    if(isMatch){
-                        db.comments = db.comments.filter(comment => comment.post !== post.id)
-                    }
-                    return !isMatch;
-                })
-                const [deletedUser] = db.users.splice(position, 1)
-                return deletedUser;
-            }
-            throw new Error("Unable to find user")
+        const position = db.users.findIndex(user => user.id === args.userId)
+        if (position >= 0) {
+            db.comments = db.comments.filter(comment => comment.creator !== args.userId)
+            db.posts = db.posts.filter(post => {
+                const isMatch = post.author === args.userId
+                if (isMatch) {
+                    db.comments = db.comments.filter(comment => comment.post !== post.id)
+                }
+                return !isMatch;
+            })
+            const [deletedUser] = db.users.splice(position, 1)
+            return deletedUser;
         }
+        throw new Error("Unable to find user")
+    },
+    updateUser(_, args, {db}){
+        const position = db.users.findIndex(user => user.id === args.userId)
+        if(position >= 0){
+            db.users[position] = {
+                ...db.users[position],
+                ...args.data
+            }
+            return db.users[position]
+        }
+        throw new Error("Unable to find user")
     }
+}
 
 export { Mutation };
 
