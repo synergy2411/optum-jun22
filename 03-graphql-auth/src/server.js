@@ -13,6 +13,16 @@ const server = createServer({
     schema :{
         typeDefs,
         resolvers
+    },
+    context : ({req, res}) => {
+        let authHeader = req.headers.authorization
+        let token = null;
+        if(authHeader){
+            token = authHeader.split(" ")[1]
+        }
+        return {
+            token
+        }
     }
 })
 
