@@ -1,0 +1,16 @@
+{
+  "name": "04-graphql-prisma",
+  "version": "1.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "generate" : "prisma generate"
+  },
+  "keywords": [],
+  "author": "SumitK",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^4.0.0",
+    "prisma": "^4.0.0"
+  }
+}
