@@ -1,8 +1,6 @@
-import { Redirect, Route } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useEffect, useState } from "react";
-import ClassBasedComp from "./Components/Demo/ClassBasedComp";
-import ErrorBoundary from "./Components/Demo/ErrorBoundary";
+import { Redirect, Route } from 'react-router-dom';
 import HelloGraphql from "./Components/Demo/HelloGraphql";
 import Login from "./Components/Demo/Login";
 import Expenses from './Components/Expenses/Expenses';

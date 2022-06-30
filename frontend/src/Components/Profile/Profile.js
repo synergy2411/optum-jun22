@@ -10,7 +10,7 @@ const FETCH_PROFILE = gql`
 `
 
 const Profile = () => {
-    const {data, error, loading } = useQuery(FETCH_PROFILE)    
+    const {data, error } = useQuery(FETCH_PROFILE)    
     if(error){
         console.log(error)
         return <p>Something unexpected happened</p>

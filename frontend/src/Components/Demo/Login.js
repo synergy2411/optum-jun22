@@ -33,8 +33,8 @@ const Login = () => {
     const history = useHistory();
     const context = useContext(AuthContext);
 
-    const [mutateFn, { data, error: mError, loading, called }] = useMutation(CREATE_USER)
-    const [loginMutate, { data: loginData, error: loginError, loading: loginLoading }] = useMutation(LOGIN)
+    const [mutateFn, { data, error: mError }] = useMutation(CREATE_USER)
+    const [loginMutate ] = useMutation(LOGIN)
 
     // Controlled
     const [password, setPassword] = useState('')
