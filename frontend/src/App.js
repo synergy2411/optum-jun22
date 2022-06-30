@@ -1,6 +1,6 @@
 import { Redirect, Route } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ClassBasedComp from "./Components/Demo/ClassBasedComp";
 import ErrorBoundary from "./Components/Demo/ErrorBoundary";
 import HelloGraphql from "./Components/Demo/HelloGraphql";
@@ -8,10 +8,23 @@ import Login from "./Components/Demo/Login";
 import Expenses from './Components/Expenses/Expenses';
 import Header from './Components/Header/Header';
 import Profile from './Components/Profile/Profile';
+import { AuthContext } from './context/auth-context';
 
 function App() {
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  useEffect(() => {
+    if(localStorage.getItem("authToken")){
+      setIsLoggedIn(true)
+    }
+  }, [])
+
   return (
+    <AuthContext.Provider value={{
+      isLoggedIn,
+      setIsLoggedIn
+    }}>
     <div className="container">
       <Header />
       <br />
@@ -31,6 +44,7 @@ function App() {
         <Profile />
       </Route>
     </div>
+    </AuthContext.Provider>
   );
 }
 

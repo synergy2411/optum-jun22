@@ -1,6 +1,7 @@
-import React, { useRef, useState } from 'react';
-import { gql, mergeOptions, useMutation } from '@apollo/client';
+import { gql, useMutation } from '@apollo/client';
+import { useContext, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { AuthContext } from '../../context/auth-context';
 
 const CREATE_USER = gql`
     mutation createNewUser($email: String!, $password: String! ){
@@ -30,6 +31,7 @@ const Login = () => {
     // Uncontrolled
     const inputUsernameRef = useRef(null);
     const history = useHistory();
+    const context = useContext(AuthContext);
 
     const [mutateFn, { data, error: mError, loading, called }] = useMutation(CREATE_USER)
     const [loginMutate, { data: loginData, error: loginError, loading: loginLoading }] = useMutation(LOGIN)
@@ -47,6 +49,7 @@ const Login = () => {
             }
         }).then(({data}) => {
             localStorage.setItem("authToken", data.login.token)
+            context.setIsLoggedIn(true)
             history.replace("/profile")
         })
     }
@@ -60,7 +63,8 @@ const Login = () => {
         }
     }
 
-    const signupHandler = () => {
+    const signupHandler = (event) => {
+        event.preventDefault()
         mutateFn({
             variables: {
                 email: inputUsernameRef.current.value,
