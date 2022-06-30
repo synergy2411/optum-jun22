@@ -6,6 +6,8 @@ require("./db");
 
 var _express = _interopRequireDefault(require("express"));
 
+var _cors = _interopRequireDefault(require("cors"));
+
 var _schema = require("./graphql/schema");
 
 var _Query = require("./graphql/resolvers/Query");
@@ -16,6 +18,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 var app = (0, _express["default"])();
 var PORT = process.env.PORT || 9090;
+app.use((0, _cors["default"])());
 var resolvers = {
   Query: _Query.Query,
   Mutation: _Mutation.Mutation

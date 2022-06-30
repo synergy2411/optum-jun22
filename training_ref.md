@@ -140,3 +140,15 @@ mutation{
 
 
 # Authentication
+
+
+# App Deployment -> Heroku -> NodeJS GraphQL App
+> Create new GIT Project
+> Download Heroku CLI
+> heroku commands
+  - heroku login
+  - heroku keys:add
+  [Optional Step] > Powershell > ssh-keygen
+> heroku create sk-optum-graphql-auth
+> git remote
+> git push heroku main

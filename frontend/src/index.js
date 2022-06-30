@@ -8,7 +8,8 @@ import App from './App';
 import './index.css';
 
 const httpLink = createHttpLink({
-  uri : "http://localhost:9090/graphql"
+  // uri : "http://localhost:9090/graphql"
+  uri : "https://sk-optum-graphql-auth.herokuapp.com/graphql"
 })
 
 const authLink = setContext((_, {headers}) => {
