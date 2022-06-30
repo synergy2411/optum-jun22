@@ -152,3 +152,9 @@ mutation{
 > heroku create sk-optum-graphql-auth
 > git remote
 > git push heroku main
+
+# React App Deploymnent -> Firebase 
+> npm install -g firebase-tools
+> firebase login
+> firebase init
+> firebase deploy
