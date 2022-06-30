@@ -1,4 +1,5 @@
 import { verify } from 'jsonwebtoken';
+import { UserModel } from '../../model/user.model';
 
 const SECRET_KEY = "My_Super_Secret_key";
 
@@ -12,19 +13,29 @@ const Query = {
             throw new Error("Auth Required")
         }
 
-        verify(token, SECRET_KEY, (err, decode) => {
+        verify(token, SECRET_KEY, async (err, decode) => {
             if (err) {
                 console.log(err);
                 throw new Error(err)
             }
             console.log("DECODE : ", decode)            // {iat :"", id : ""}
-            return ({ id: "Dummy ID",
-                name: "Any name",
-                age: 32,
-                salary: 100000,
-                email: "test@test"
-            })
+            // try{
+            //     const userFound = await UserModel.findOne({id : decode.id})
+            //     console.log(userFound);
+            //     if(userFound){
+            //         return {
+            //             id : userFound._id,
+            //             email  : userFound.email
+            //         }
+            //     }
+            //     console.log("User not found");
+            // }catch(err){
+            //     console.log(err);
+            //     throw new Error(err)
+            // }
         })
+        console.log("Outide verify")
+        return { id : "Dummy ID", email : "test@test" }
     }
 }
 

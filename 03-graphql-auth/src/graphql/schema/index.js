@@ -10,10 +10,7 @@ const typeDefs = /* GraphQL */`
     }
     type UserProfile {
         id: ID!
-        name: String!
         email: String!
-        age: Int!
-        salary: Int!
     }
     type AuthPayload {
         token: String!
