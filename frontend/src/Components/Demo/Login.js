@@ -1,8 +1,36 @@
 import React, { useRef, useState } from 'react';
+import { gql, mergeOptions, useMutation } from '@apollo/client';
+
+const CREATE_USER = gql`
+    mutation createNewUser($email: String!, $password: String! ){
+        createUser(data:{
+            email :$email,
+            password:$password
+        }){
+            id
+            email
+        }
+    }
+`
+
+const LOGIN = gql`
+    mutation userLogin($email: String!, $password: String!){
+        login(data:{
+            email:$email
+            password:$password
+        }){
+            token
+        }
+    }
+`
+
 
 const Login = () => {
     // Uncontrolled
     const inputUsernameRef = useRef(null);
+
+    const [mutateFn, { data, error: mError, loading, called }] = useMutation(CREATE_USER)
+    const [loginMutate, { data: loginData, error: loginError, loading: loginLoading }] = useMutation(LOGIN)
 
     // Controlled
     const [password, setPassword] = useState('')
@@ -10,8 +38,17 @@ const Login = () => {
 
     const submitHandler = event => {
         event.preventDefault();
-        console.log("USERNAME  : ", inputUsernameRef.current.value)
-        console.log("PASSWORD : ", password);
+        loginMutate({
+            variables: {
+                email: inputUsernameRef.current.value,
+                password
+            }
+        })
+    }
+
+    if (loginData) {
+        // console.log(loginData)
+        localStorage.setItem("authToken", loginData.login.token)
     }
 
     const passwordBlurHandler = () => {
@@ -22,20 +59,40 @@ const Login = () => {
             setError(err => ["Password must have exclamation mark", ...err])
         }
     }
+
+    const signupHandler = () => {
+        mutateFn({
+            variables: {
+                email: inputUsernameRef.current.value,
+                password
+            }
+        })
+            .then(res => console.log(res))
+            .catch(console.log)
+    }
+    if (mError) {
+        console.log(mError);
+        return <p>Something bad happened while creating the user</p>
+    }
     return (
-        <form onSubmit={submitHandler}>
-            <label>Username : </label>
-            <input type="text" name='username' ref={inputUsernameRef} />
-            <br />
-            <label>Password : </label>
-            <input type="password" name='password'
-                value={password} onChange={event => setPassword(event.target.value)}
-                onBlur={passwordBlurHandler} />
-            <ul>
-                {error.map(err => <li key={err}>{err}</li>)}
-            </ul>
-            <button type='submit'>Submit</button>
-        </form>
+        <>
+            <h4>Login / Signup Form</h4>
+            {data && <h5>Hello {data.createUser.email}</h5>}
+            <form onSubmit={submitHandler}>
+                <label>Username : </label>
+                <input type="text" name='username' ref={inputUsernameRef} />
+                <br />
+                <label>Password : </label>
+                <input type="password" name='password'
+                    value={password} onChange={event => setPassword(event.target.value)}
+                    onBlur={passwordBlurHandler} />
+                <ul>
+                    {error.map(err => <li key={err}>{err}</li>)}
+                </ul>
+                <button className='btn btn-primary' type='submit'>Login</button>
+                <button className='btn btn-secondary' onClick={signupHandler}>Sign Up</button>
+            </form>
+        </>
     );
 }
 

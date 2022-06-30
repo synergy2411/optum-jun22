@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec babel-node src/server.js",
-    "dev": "nodemon src/server.js"
+    "build": "babel src/ -d dist",
+    "start": "npm run build && node dist/server.js",
+    "dev": "npm run build && nodemon dist/server.js"
   },
   "keywords": [],
   "author": "SumitK",
@@ -13,7 +14,9 @@
   "dependencies": {
     "@graphql-yoga/node": "^2.9.2",
     "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
     "event-target-polyfill": "0.0.3",
+    "express": "^4.18.1",
     "graphql": "^16.5.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.4.1",

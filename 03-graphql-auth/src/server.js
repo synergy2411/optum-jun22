@@ -1,8 +1,14 @@
 import { createServer } from '@graphql-yoga/node';
 import "./db";
+import express from 'express';
+import cors from 'cors';
 import { typeDefs } from './graphql/schema';
 import { Query } from './graphql/resolvers/Query';
 import { Mutation } from './graphql/resolvers/Mutation';
+
+const app = express();
+const PORT = process.env.PORT || 9090;
+app.use(cors());
 
 const resolvers = {
     Query,
@@ -26,5 +32,11 @@ const server = createServer({
     }
 })
 
+app.get("/", (req, res) => {
+    res.send({message : "Pls visit /graphql to access single endpoint"})
+})
 
-server.start();
+app.use("/graphql", server)
+
+app.listen(PORT, () => console.log("Server started at PORT : ", PORT))
+// server.start();
